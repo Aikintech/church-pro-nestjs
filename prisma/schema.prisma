@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum StagingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  INQUIRE
+}
+
+// Models
+model Staging {
+  id                   String        @id @default(uuid())
+  firstName            String
+  lastName             String
+  email                String
+  emailVerifiedAt      DateTime?
+  password             String
+  phoneNumber          String?
+  organizationName     String
+  defaultWorkspaceName String
+  status               StagingStatus
+  position             String
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  @@map("staging")
+}
+
+model User {
+  id              String             @id @default(uuid())
+  firstName       String
+  lastName        String
+  email           String             @unique
+  emailVerifiedAt DateTime?
+  password        String
+  phoneNumber     String?
+  organizations   OrganizationUser[]
+  workspaces      UserWorspace[]
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@map("users")
+}
+
+model Organization {
+  id         String             @id @default(uuid())
+  name       String
+  workspaces Workspace[]
+  users      OrganizationUser[]
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  @@map("organizations")
+}
+
+model Workspace {
+  id             String         @id @default(uuid())
+  name           String
+  organization   Organization   @relation(fields: [organizationId], references: [id])
+  organizationId String
+  users          UserWorspace[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@map("workspaces")
+}
+
+model OrganizationUser {
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+
+  @@id([userId, organizationId])
+  @@map("organization_users")
+}
+
+model UserWorspace {
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  workspaceId String
+
+  @@id([userId, workspaceId])
+  @@map("user_workspaces")
+}
