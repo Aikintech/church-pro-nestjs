@@ -5,22 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    env_file:
-      - .env
     ports:
       - '3000:3000'
-    # environment:
-    #   - PORT=7001
-    #   - APP_NAME=Church Pro
-    #   - APP_ENV=local
-    #   - APP_KEY=
-    #   - APP_DEBUG=true
-    #   - APP_URL=http://localhost
-
-    #   - DB_CONNECTION=mysql
-    #   - DB_HOST=127.0.0.1
-    #   - DB_PORT=3306
-    #   - DB_DATABASE=church_pro_nest
-    #   - DB_USERNAME=dbuser
-    #   - DB_PASSWORD=Password2020!
-    #   - DATABASE_URL="${DB_CONNECTION}://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}"
+    environment:
+      - DATABASE_URL=${DB_DATABASE_URL}
