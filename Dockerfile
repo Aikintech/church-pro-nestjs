@@ -18,5 +18,4 @@ COPY --from=dependencies /app/package*.json ./
 COPY --from=dependencies /app/dist ./dist
 COPY --from=dependencies /app/prisma ./prisma
 
-EXPOSE 3000
 CMD [ "npm", "run", "start:migrate:prod" ]
